@@ -473,7 +473,7 @@ a, button, select, input, .rotator-hotspot, .color-swatch, .color-dot, .sound-ca
 /* Hero Section */
 #hero {
   position: relative;
-  width: 100%;
+  width: 100vw;
   height: 100vh;
   min-height: 700px;
   display: flex;
@@ -490,37 +490,142 @@ a, button, select, input, .rotator-hotspot, .color-swatch, .color-dot, .sound-ca
   width: 100%;
   height: 100%;
   z-index: 1;
+  overflow: hidden;
+  background: #030303;
 }
 
-.hero-img-bg {
+/* Fullscreen Background Video with GPU Acceleration */
+.hero-video-bg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center;
-  filter: brightness(0.65) contrast(1.1);
+  transform: translate(-50%, -50%) scale(1.05);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform-style: preserve-3d;
+}
+
+.hero-video-bg.loaded,
+.hero-video-bg.playing,
+.preloader-finished .hero-video-bg {
+  opacity: 1;
+}
+
+/* Fallback Hero Image */
+.hero-img-fallback {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 1;
+  display: none;
+  filter: brightness(0.7) contrast(1.1);
   transform: scale(1.05);
 }
 
+.hero-bg-visual.video-failed .hero-video-bg {
+  display: none;
+}
+
+.hero-bg-visual.video-failed .hero-img-fallback {
+  display: block;
+}
+
+/* Cinematic Overlays */
 .hero-overlay {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle at center, transparent 20%, rgba(5, 5, 5, 0.8) 80%),
-              linear-gradient(180deg, rgba(5, 5, 5, 0.4) 0%, rgba(5, 5, 5, 0.95) 100%);
+  pointer-events: none;
+}
+
+/* Dark Overlay (40-60% opacity) for high text readability */
+.hero-overlay.dark-overlay {
+  background: rgba(3, 3, 5, 0.50);
   z-index: 2;
+}
+
+/* Gradient Overlay for Depth */
+.hero-overlay.gradient-overlay {
+  background: radial-gradient(circle at center, rgba(5, 5, 5, 0.15) 20%, rgba(5, 5, 5, 0.85) 90%),
+              linear-gradient(180deg, rgba(5, 5, 5, 0.6) 0%, transparent 40%, rgba(3, 3, 3, 0.98) 100%);
+  z-index: 3;
+}
+
+/* Subtle Noise Texture Overlay */
+.hero-overlay.noise-overlay {
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+  z-index: 4;
+  opacity: 0.7;
 }
 
 .hero-content {
   position: relative;
-  z-index: 3;
+  z-index: 5;
   max-width: var(--max-width);
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   margin-top: 4rem;
+}
+
+.hero-brand-header {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.hero-audi-rings {
+  width: 70px;
+  height: 26px;
+  color: var(--accent-red);
+  filter: drop-shadow(0 0 10px rgba(227, 6, 19, 0.7));
+}
+
+/* Floating Ambient Effects */
+.hero-ambient-glow {
+  position: absolute;
+  top: 25%;
+  left: 15%;
+  width: 550px;
+  height: 550px;
+  background: radial-gradient(circle, rgba(227, 6, 19, 0.18) 0%, transparent 70%);
+  filter: blur(90px);
+  z-index: 4;
+  pointer-events: none;
+  animation: pulseHeroGlow 7s ease-in-out infinite alternate;
+}
+
+.hero-light-beam {
+  position: absolute;
+  top: -25%;
+  right: 15%;
+  width: 320px;
+  height: 150%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 65%);
+  transform: rotate(-25deg);
+  z-index: 4;
+  pointer-events: none;
+}
+
+@keyframes pulseHeroGlow {
+  0% { opacity: 0.35; transform: scale(0.9); }
+  100% { opacity: 0.75; transform: scale(1.1); }
 }
 
 .hero-tag {

@@ -100,12 +100,26 @@
     <!-- Hero Section -->
     <section id="hero">
       <div class="hero-bg-visual">
-        <img src="assets/images/audi-r8-hero.jpg" alt="Audi R8 Super Sport Hero" class="hero-img-bg">
-        <div class="hero-overlay"></div>
+        <video class="hero-video-bg" autoplay muted loop playsinline webkit-playsinline poster="assets/images/hero-fallback.webp" preload="auto">
+          <source src="assets/videos/hero.mp4" type="video/mp4">
+        </video>
+        <img src="assets/images/hero-fallback.webp" alt="Audi R8 Super Sport Hero Fallback" class="hero-img-fallback">
+        <div class="hero-overlay dark-overlay"></div>
+        <div class="hero-overlay gradient-overlay"></div>
+        <div class="hero-overlay noise-overlay"></div>
       </div>
 
       <div class="hero-content">
-        <div class="hero-tag"><i class="fa-solid fa-flag-checkered"></i> FLAGSHIP SUPERSPORT</div>
+        <div class="hero-brand-header">
+          <svg class="hero-audi-rings" viewBox="0 0 450 160">
+            <circle cx="90" cy="80" r="65" fill="none" stroke="currentColor" stroke-width="14" />
+            <circle cx="180" cy="80" r="65" fill="none" stroke="currentColor" stroke-width="14" />
+            <circle cx="270" cy="80" r="65" fill="none" stroke="currentColor" stroke-width="14" />
+            <circle cx="360" cy="80" r="65" fill="none" stroke="currentColor" stroke-width="14" />
+          </svg>
+          <div class="hero-tag"><i class="fa-solid fa-flag-checkered"></i> FLAGSHIP SUPERSPORT</div>
+        </div>
+
         <h1 class="hero-title">AUDI R8<br><span>SUPER SPORT</span></h1>
         <p class="hero-subtitle">Engineering the Extraordinary. 620 HP of pure naturally aspirated V10 performance, precision Quattro all-wheel drive, and iconic carbon design.</p>
         
@@ -134,6 +148,10 @@
         <span>SCROLL TO DISCOVER</span>
         <div class="scroll-line"></div>
       </div>
+
+      <!-- Floating Ambient Effects -->
+      <div class="hero-ambient-glow"></div>
+      <div class="hero-light-beam"></div>
     </section>
 
     <!-- Section 1: Overview -->

@@ -279,12 +279,67 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   /* -------------------------------------------------------------------------- */
-  /* 4. Preloader Simulation & Entrance Timeline                                */
+  /* 4. Preloader Simulation & Hero Background Video Controller                  */
   /* -------------------------------------------------------------------------- */
   const preloader = document.getElementById('preloader');
   const loaderPercent = document.getElementById('loader-percent');
   const loaderFill = document.getElementById('loader-fill');
   const startBtn = document.getElementById('start-btn');
+  const heroVideo = document.querySelector('.hero-video-bg');
+  const heroBgVisual = document.querySelector('.hero-bg-visual');
+
+  // Video Autoplay, Continuous Loop & Fallback Setup
+  if (heroVideo) {
+    heroVideo.muted = true;
+    heroVideo.playsInline = true;
+
+    const playVideo = () => {
+      const promise = heroVideo.play();
+      if (promise !== undefined) {
+        promise.then(() => {
+          heroVideo.classList.add('playing');
+        }).catch(err => {
+          console.warn('Hero video autoplay notice:', err);
+          const enablePlayOnUserAction = () => {
+            heroVideo.play().then(() => heroVideo.classList.add('playing')).catch(() => {});
+            window.removeEventListener('click', enablePlayOnUserAction);
+            window.removeEventListener('touchstart', enablePlayOnUserAction);
+          };
+          window.addEventListener('click', enablePlayOnUserAction);
+          window.addEventListener('touchstart', enablePlayOnUserAction);
+        });
+      }
+    };
+
+    playVideo();
+
+    heroVideo.addEventListener('error', () => {
+      console.warn('Hero video load failure, displaying fallback hero image.');
+      heroBgVisual?.classList.add('video-failed');
+    });
+
+    // Enforce video never pauses while page is active
+    heroVideo.addEventListener('pause', () => {
+      if (!document.hidden && heroVideo.readyState >= 2) {
+        heroVideo.play().catch(() => {});
+      }
+    });
+  }
+
+  // Hero Video Scroll Parallax & Scale Effect
+  if (heroVideo && typeof gsap !== 'undefined') {
+    gsap.to(heroVideo, {
+      scrollTrigger: {
+        trigger: '#hero',
+        start: 'top top',
+        end: 'bottom top',
+        scrub: true
+      },
+      yPercent: 15,
+      scale: 1.15,
+      ease: 'none'
+    });
+  }
 
   let currentPercent = 0;
   const loadInterval = setInterval(() => {
@@ -307,10 +362,17 @@ document.addEventListener('DOMContentLoaded', () => {
     playV10RealisticStartup();
 
     preloader?.classList.add('loaded');
+    document.body.classList.add('preloader-finished');
+
+    if (heroVideo) {
+      heroVideo.play().catch(() => {});
+      heroVideo.classList.add('loaded');
+    }
 
     // Hero GSAP Reveal Timeline
     const heroTl = gsap.timeline({ delay: 0.2 });
-    heroTl.from('.hero-tag', { opacity: 0, y: 25, duration: 0.7 })
+    heroTl.from('.hero-audi-rings', { opacity: 0, scale: 0.8, duration: 0.6 })
+          .from('.hero-tag', { opacity: 0, y: 25, duration: 0.7 }, '-=0.3')
           .from('.hero-title', { opacity: 0, y: 40, duration: 0.9, ease: 'power3.out' }, '-=0.4')
           .from('.hero-subtitle', { opacity: 0, y: 25, duration: 0.7 }, '-=0.5')
           .from('.hero-actions', { opacity: 0, y: 20, duration: 0.5 }, '-=0.4')
